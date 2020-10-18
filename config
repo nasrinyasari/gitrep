@@ -1,0 +1,36 @@
+Host bastionet2598
+  IdentityFile ~/.ssh/id_rsa
+  User ubuntu
+  Hostname 31.12.85.234
+  forwardAgent yes
+  ControlMaster auto
+  StrictHostKeyChecking no
+  controlPersist 5m
+
+Host devA
+ Hostname 10.0.1.18
+ User ubuntu
+ IdentityFile ~/.ssh/id_rsa
+ ProxyCommand ssh -W %h:%p bastionET2598
+ StrictHostKeyChecking no
+
+Host devB
+ Hostname 10.0.1.21
+ User ubuntu
+ IdentityFile ~/.ssh/id_rsa
+ ProxyCommand ssh -W %h:%p bastionET2598
+ StrictHostKeyChecking no
+
+Host devC
+ Hostname 10.0.1.20
+ User ubuntu
+ IdentityFile ~/.ssh/id_rsa
+ ProxyCommand ssh -W %h:%p bastionET2598
+ StrictHostKeyChecking no
+
+Host devhaproxy
+ Hostname 10.0.1.13
+ User ubuntu
+ IdentityFile ~/.ssh/id_rsa
+ ProxyCommand ssh -W %h:%p bastionET2598
+ StrictHostKeyChecking no  
