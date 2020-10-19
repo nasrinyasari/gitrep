@@ -1,0 +1,51 @@
+---
+#- name: install haproxy
+#  hosts: haproxy
+#  become: yes
+#  tasks:
+#  - name:install haproxy
+#  yum:
+#   name: install haproxy
+#   state: latest
+
+ - name: install and start nginx
+   hosts: webservers
+   remote_user: ubuntu
+   become: yes
+
+   tasks:
+ #  - name: install python  bindings for SELinux  
+ #    dnf: name={{item}} state=present
+ #    with_items:
+ #    - libselinux-python
+ #    - libsemanage-python
+   - name: apt-get update
+     apt:
+       update_cache: yes
+       cache_valid_time: 3600
+
+   - name: install nginx
+     apt: 
+       name: nginx 
+       state: latest
+
+   - name: restart nginx
+     service:
+       name: nginx
+       state: restarted  
+#############################################
+ - name: install and start haproxy
+   hosts: haproxy
+   remote_user: ubuntu
+   become: yes
+
+   tasks:
+   - name: install haproxy
+     apt:
+       name: haproxy
+       state: latest
+   - name: restart haproxy
+     service:
+       name: haproxy
+       state: restarted
+ 
