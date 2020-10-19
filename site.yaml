@@ -49,21 +49,27 @@
  - name: configure nginx
    hosts: webservers
    become: true
-   vars:
-     nginx_sites: /etc/nginx/sites-available
-     doc_root: /var/www/html
   
    tasks:
 
    - name: create php file
      copy:
-       src=index.php dest={{ doc_root }}/index.php
-
-   - name: delete default nginx vhost
-     file:
-       path={{ nginx_sites }}/default
-       state=absent
+       src=index.php dest=/var/www/html/index.php
 
    - name: create default nginx vhost
      copy:
-       src=default dest={{ nginx_sites }}/default
+       src=default.conf dest=/etc/nginx/sites-available/default.conf
+
+   - name: create default nginx vhost symlink
+     file:
+       src=/etc/nginx/sites-available/default.conf
+       dest=/etc/nginx/sites-enabled/default.conf
+       state=link    
+     notify: restart nginx
+
+   handlers:
+   - name: restart nginx
+     service:
+       name=nginx
+       state=restarted
+
