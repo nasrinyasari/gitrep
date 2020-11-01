@@ -2,7 +2,7 @@
  - name: install and start nginx
    hosts: webservers
    remote_user: ubuntu
-   become: yes
+   become: true
 
    tasks:
    - name: apt-get update
@@ -15,7 +15,12 @@
        name: nginx 
        state: latest
 
-   - name: install php
+   - name: start nginx
+     service:
+       name: nginx
+       state: started
+
+   - name: install php 
      apt:
        name: php
        state: latest
@@ -25,15 +30,26 @@
        name: php-fpm
        state: latest
 
+   - name: create php file
+     copy:
+       src=index.php dest=/var/www/html/index.php
+
+   - name: create default nginx vhost
+     become: true
+     copy:
+       src=default.conf dest=/etc/nginx/sites-available/default
+
    - name: restart nginx
+     become: true
      service:
        name: nginx
-       state: restarted  
+       state: restarted
+
 #############################################
  - name: install and start haproxy
    hosts: haproxy
    remote_user: ubuntu
-   become: yes
+   become: true
 
    tasks:
    - name: install haproxy
@@ -46,30 +62,3 @@
        name: haproxy
        state: restarted
 #############################################
- - name: configure nginx
-   hosts: webservers
-   become: true
-  
-   tasks:
-
-   - name: create php file
-     copy:
-       src=index.php dest=/var/www/html/index.php
-
-   - name: create default nginx vhost
-     copy:
-       src=default.conf dest=/etc/nginx/sites-available/default.conf
-
-   - name: create default nginx vhost symlink
-     file:
-       src=/etc/nginx/sites-available/default.conf
-       dest=/etc/nginx/sites-enabled/default.conf
-       state=link    
-     notify: restart nginx
-
-   handlers:
-   - name: restart nginx
-     service:
-       name=nginx
-       state=restarted
-

@@ -1,36 +1,28 @@
 Host bastionET2598
- Hostname 31.12.85.234
- user ubuntu
- IdentityFile /home/ubuntu/.ssh/id_rsa
-
-Host 10.0.1.*
+ Hostname 31.132.58.40
  User ubuntu
- IdentityFile /home/ubuntu/.ssh/id_rsa
- ProxyJump bastionET2598
+ IdentityFile /home/ubuntu/.ssh/id_rsa 
 
 Host devhaproxy
- Hostname 10.0.1.13
+ Hostname 10.0.1.22
  User ubuntu
- IdentityFile /home/ubuntu/.ssh/id_rsa
+ IdentityFile ~/.ssh/id_rsa
  ProxyJump bastionET2598
 
 Host devA
- Hostname 10.0.1.18
+ Hostname 10.0.1.27
  User ubuntu
  IdentityFile /home/ubuntu/.ssh/id_rsa
  ProxyJump bastionET2598
 
 Host devB
- Hostname 10.0.1.21
+ Hostname 10.0.1.10
  User ubuntu
  IdentityFile /home/ubuntu/.ssh/id_rsa
  ProxyJump bastionET2598
 
 Host devC
- Hostname 10.0.1.20
+ Hostname 10.0.1.9
  User ubuntu
  IdentityFile /home/ubuntu/.ssh/id_rsa
  ProxyJump bastionET2598
-
-
-
