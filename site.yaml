@@ -1,64 +1,79 @@
 ---
- - name: install and start nginx
-   hosts: webservers
-   remote_user: ubuntu
-   become: true
+- name: install and start nginx
+  hosts: webservers
+  remote_user: ubuntu
+  become: true
 
-   tasks:
-   - name: apt-get update
-     apt:
-       update_cache: yes
-       cache_valid_time: 3600
+  tasks:
+  - name: apt-get update
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
 
-   - name: install nginx
-     apt: 
-       name: nginx 
-       state: latest
+  - name: install nginx
+    apt: 
+      name: nginx 
+      state: latest
 
-   - name: start nginx
-     service:
-       name: nginx
-       state: started
+  - name: start nginx
+    service:
+      name: nginx
+      state: started
 
-   - name: install php 
-     apt:
-       name: php
-       state: latest
+  - name: install php 
+    apt:
+      name: php
+      state: latest
 
-   - name: install php-fpm
-     apt:
-       name: php-fpm
-       state: latest
+  - name: install php-fpm
+    apt:
+      name: php-fpm
+      state: latest
 
-   - name: create php file
-     copy:
-       src=index.php dest=/var/www/html/index.php
+  - name: create php file
+    copy:
+      src=index.php dest=/var/www/html/index.php
 
-   - name: create default nginx vhost
-     become: true
-     copy:
-       src=default.conf dest=/etc/nginx/sites-available/default
+  - name: create default nginx vhost
+    become: true
+    copy:
+      src=default.conf dest=/etc/nginx/sites-available/default
 
-   - name: restart nginx
-     become: true
-     service:
-       name: nginx
-       state: restarted
+  - name: restart nginx
+    become: true
+    service:
+      name: nginx
+      state: restarted
 
 #############################################
- - name: install and start haproxy
-   hosts: haproxy
-   remote_user: ubuntu
-   become: true
-
-   tasks:
-   - name: install haproxy
-     apt:
-       name: haproxy
-       state: latest
-
-   - name: restart haproxy
-     service:
-       name: haproxy
-       state: restarted
+- hosts: webservers
+  tasks:
+    - debug: var=ansible_all_ipv4_addresses
 #############################################
+- name: install and start haproxy
+  hosts: haproxy
+  remote_user: ubuntu
+  become: true
+
+  tasks:
+  - name: install haproxy
+    apt:
+      name: haproxy
+      state: latest
+
+  - name: config haproxy
+    template:
+      src: haproxy.config
+      dest: /etc/haproxy/haproxy.cfg
+   
+  - name: restart haproxy
+    service:
+      name: haproxy
+      state: restarted
+
+  - name: start haproxy
+    service:
+      name: haproxy 
+      state: started
+#############################################
+     
